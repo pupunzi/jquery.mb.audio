@@ -1,0 +1,120 @@
+<!doctype html>
+<!--
+  ~ /*******************************************************************************
+  ~  jquery.mb.components
+  ~  file: demo_queue.html
+  ~
+  ~  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
+  ~  Open lab srl, Firenze - Italy
+  ~  email: matteo@open-lab.com
+  ~  site: 	http://pupunzi.com
+  ~  blog:	http://pupunzi.open-lab.com
+  ~ 	http://open-lab.com
+  ~
+  ~  Licences: MIT, GPL
+  ~  http://www.opensource.org/licenses/mit-license.php
+  ~  http://www.gnu.org/licenses/gpl.html
+  ~
+  ~  last modified: 14/02/13 18.23
+  ~  ******************************************************************************/
+  -->
+
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <title>jquery.mb.audio</title>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9/jquery.min.js"></script>
+    <script type="text/javascript" src="inc/jquery.mb.audio.js"></script>
+    <script type="text/javascript">
+
+        /*
+         * DEFINE SOUNDS
+         */
+        $.mbAudio.sounds = {
+
+            backgroundSprite: {
+                id: "backgrounds",
+                ogg: "sounds/bgndsSprite.ogg",
+                mp3: "sounds/bgndsSprite.mp3",
+                //example of sprite
+                sprite:{
+                    intro     : {id: "intro", start: 80, end: 116.975, loop: true},
+                    levelIntro: {id: "levelIntro", start: 60, end: 77.470, loop: true},
+                    tellStory: {id: "tellStory", start: 80, end: 116.975, loop: true},
+                    level1    : {id: "level1", start: 5, end: 13, loop: true},
+                    level2    : {id: "level2", start: 40, end: 56, loop: true},
+                    level3    : {id: "level3", start: 120, end: 136.030, loop: true}
+                }
+            },
+
+            effectSprite: {
+                id: "effects",
+                ogg: "sounds/effectsSprite.ogg",
+                mp3: "sounds/effectsSprite.mp3",
+                //example of sprite
+                sprite:{
+                    streak: {id: "streak", start: 0, end: 1.3, loop: 3},
+                    great : {id: "great", start: 5, end: 8, loop: false},
+                    divine: {id: "divine", start: 10, end: 11.6, loop: false},
+                    wow   : {id: "wow", start: 15, end: 20, loop: false},
+                    levelIntro    : {id: "levelIntro", start: 20, end: 25, loop: false},
+                    levelCompleted: {id: "levelCompleted", start: 25, end: 30, loop: false},
+                    subLevelLost: {id: "subLevelLost", start: 35, end: 38.1, loop: false},
+                    subLevelWon : {id: "subLevelWon", start: 30, end: 31.9, loop: false},
+                    gameWon : {id: "gameWon", start: 30, end: 31.9, loop: false}
+                }
+            }
+        };
+
+
+        $(function () {
+            if(!isAndroid)
+                $(document).one("soundsLoaded",function(){
+                    $.mbAudio.play('backgroundSprite',"level2");
+                });
+        })
+
+    </script>
+
+    <style>
+        body{
+            padding: 50px;
+        }
+        button{
+            display: block;
+            margin: 30px 10px;
+            padding: 10px;;
+
+        }
+    </style>
+
+</head>
+<body>
+<h2>jquery.mb.audio API: Using the "direct play" and the "sprite" features.</h2>
+<p>To invoke the "play" event for a specific sprite:<br>
+    <b>$.mbAudio.play(audio, sprite)</b></p>
+
+<div id="start">
+    <p>This button is needed to initialize the audio, expecially for Android.</p>
+    <script>
+        if(isiOs || !isDevice){
+            document.write("<p>this button will also initialize the effects sprite and will play the background sprite.</p>")
+        }
+    </script>
+    <button style="cursor:pointer" onclick="$.mbAudio.init(true); $('#start').hide(); $('#buttons').fadeIn()">Lets start</button>
+</div>
+<div id="buttons" style="display: none;">
+    <p>The tree buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
+    <button id="playSound1" style="cursor:pointer" onclick="$.mbAudio.play('effectSprite', 'streak')">play sound 1</button>
+    <button style="cursor:pointer" onclick="$.mbAudio.play('effectSprite', 'wow')">play sound 2</button>
+    <button style="cursor:pointer" onclick="$.mbAudio.play('effectSprite', 'great')">play sound 3</button>
+    <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background</button>
+    <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background</button>
+</div>
+</body>
+</html>
