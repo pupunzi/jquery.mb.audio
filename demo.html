@@ -72,15 +72,6 @@
         };
 
 
-        $(function () {
-            $(document).one("soundsLoaded",function(){
-                if(!isAndroid)
-                    $.mbAudio.play('backgroundSprite',"level2");
-            });
-        })
-
-
-
         function audioIsReady(){
 
             setTimeout(function(){
@@ -154,9 +145,16 @@
     <button style="cursor:pointer"  onmousedown="toggleButtons();$.mbAudio.play('effectSprite', 'wow',toggleButtons)">play effect 2</button>
     <button id="playSound1" style="cursor:pointer" onmousedown="toggleButtons();$.mbAudio.play('effectSprite', 'streak',toggleButtons)">play effect 3 (it loops 3 times)</button>
 
-    <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background sound</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background sound</button>
+    <div id="bgndControls" style="display: none">
+        <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background sound</button>
+        <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background sound</button>
+    </div>
+    <script>
+        if(isStandAlone || !isDevice)
+            $("#bgndControls").show()
+    </script>
+    <br>
+    <a href="demo_queue.html">See also the "Queue" demo</a>
 </div>
-<a href="demo_queue.html">See also the "Queue" demo</a>
 </body>
 </html>
