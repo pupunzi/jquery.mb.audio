@@ -38,14 +38,14 @@
         $.mbAudio.sounds = {
 
             backgroundSprite: {
-                id: "backgroundSprite",
-                ogg: "sounds/bgndsSprite.ogg",
-                mp3: "sounds/bgndsSprite.mp3",
+                id    : "backgroundSprite",
+                ogg   : "sounds/bgndsSprite.ogg",
+                mp3   : "sounds/bgndsSprite.mp3",
                 //example of sprite
-                sprite:{
+                sprite: {
                     intro     : {id: "intro", start: 80, end: 116.975, loop: true},
                     levelIntro: {id: "levelIntro", start: 60, end: 77.470, loop: true},
-                    tellStory: {id: "tellStory", start: 80, end: 116.975, loop: true},
+                    tellStory : {id: "tellStory", start: 80, end: 116.975, loop: true},
                     level1    : {id: "level1", start: 5, end: 13, loop: true},
                     level2    : {id: "level2", start: 40, end: 56, loop: true},
                     level3    : {id: "level3", start: 120, end: 136.030, loop: true}
@@ -53,35 +53,35 @@
             },
 
             effectSprite: {
-                id: "effectSprite",
-                ogg: "sounds/effectsSprite.ogg",
-                mp3: "sounds/effectsSprite1.mp3",
+                id    : "effectSprite",
+                ogg   : "sounds/effectsSprite.ogg",
+                mp3   : "sounds/effectsSprite1.mp3",
                 //example of sprite
-                sprite:{
-                    streak: {id: "streak", start: 0, end: 1.3, loop: 3},
-                    great : {id: "great", start: 5, end: 8, loop: false},
-                    divine: {id: "divine", start: 10, end: 11.6, loop: false},
-                    wow   : {id: "wow", start: 15, end: 20, loop: false},
+                sprite: {
+                    streak        : {id: "streak", start: 0, end: 1.3, loop: 3},
+                    great         : {id: "great", start: 5, end: 8, loop: false},
+                    divine        : {id: "divine", start: 10, end: 11.6, loop: false},
+                    wow           : {id: "wow", start: 15, end: 20, loop: false},
                     levelIntro    : {id: "levelIntro", start: 20, end: 25, loop: false},
                     levelCompleted: {id: "levelCompleted", start: 25, end: 30, loop: false},
-                    subLevelLost: {id: "subLevelLost", start: 35, end: 38.1, loop: false},
-                    subLevelWon : {id: "subLevelWon", start: 30, end: 31.9, loop: false},
-                    gameWon : {id: "gameWon", start: 30, end: 31.9, loop: false}
+                    subLevelLost  : {id: "subLevelLost", start: 35, end: 38.1, loop: false},
+                    subLevelWon   : {id: "subLevelWon", start: 30, end: 31.9, loop: false},
+                    gameWon       : {id: "gameWon", start: 30, end: 31.9, loop: false}
                 }
             }
         };
 
 
-        function audioIsReady(){
+        function audioIsReady() {
 
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#buttons').fadeIn();
                 $("#loading").hide();
 
-                if(isStandAlone || !isDevice)
-                    $.mbAudio.play('backgroundSprite',"level2");
+                if (isStandAlone || !isDevice)
+                    $.mbAudio.play('backgroundSprite', "level2");
 
-            },3000);
+            }, 3000);
 
         }
 
@@ -98,10 +98,11 @@
     </script>
 
     <style>
-        body{
+        body {
             padding: 50px;
         }
-        button{
+
+        button {
             display: block;
             margin: 30px 10px;
             padding: 10px;;
@@ -119,35 +120,42 @@
 
 </head>
 <body>
-<a href="https://github.com/pupunzi/jquery.mb.audio"><img style="width:100px; position: absolute; top: 20px; right: 20px; border: 0; z-index: 1000" src="http://upload.wikimedia.org/wikipedia/commons/b/b3/GitHub.svg" alt="Fork me on GitHub"></a>
+<a href="https://github.com/pupunzi/jquery.mb.audio"><img
+        style="width:100px; position: absolute; top: 20px; right: 20px; border: 0; z-index: 1000"
+        src="http://upload.wikimedia.org/wikipedia/commons/b/b3/GitHub.svg" alt="Fork me on GitHub"></a>
+
 <h2>jquery.mb.audio API: Using the "direct play" and the "sprite" features.</h2>
+
 <p>To invoke the "play" event for a specific sprite:<br>
     <b>$.mbAudio.play(audio, sprite)</b></p>
 
 <div id="start">
     <p>This button is needed to initialize audio (see the table in the documentation) [todo: wiki].</p>
     <script>
-        if(isiOs || !isDevice){
+        if (isiOs || !isDevice) {
             document.write("<p>This button will also initialize the effects sprite and will play the background sprite (only iOS).</p>")
         }
     </script>
-    <button style="cursor:pointer"  onclick="$(document).trigger('initAudio')">Lets start</button>
+    <button style="cursor:pointer" onclick="$(document).trigger('initAudio')">Lets start</button>
 </div>
 <div id="loading" style="display: none;">... loading ...</div>
 
 <div id="buttons" style="display: none;">
     <p>The three buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
-    <button style="cursor:pointer"  onmousedown="$.mbAudio.play('effectSprite', 'great')">play effect 1</button>
-    <button style="cursor:pointer"  onmousedown="$.mbAudio.play('effectSprite', 'wow')">play effect 2</button>
-    <button id="playSound1" style="cursor:pointer" onmousedown="$.mbAudio.play('effectSprite', 'streak')">play effect 3 (it loops 3 times)</button>
+    <button style="cursor:pointer" onmousedown="$.mbAudio.play('effectSprite', 'great')">play effect 1</button>
+    <button style="cursor:pointer" onmousedown="$.mbAudio.play('effectSprite', 'wow')">play effect 2</button>
+    <button id="playSound1" style="cursor:pointer" onmousedown="$.mbAudio.play('effectSprite', 'streak')">play effect 3
+        (it loops 3 times)
+    </button>
 
     <div id="bgndControls" style="display: none">
         <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background sound</button>
-        <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background sound</button>
+        <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background sound
+        </button>
     </div>
 
     <script>
-        if(isStandAlone || !isDevice)
+        if (isStandAlone || !isDevice)
             $("#bgndControls").show();
     </script>
     <br>
