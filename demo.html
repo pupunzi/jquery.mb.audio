@@ -2,7 +2,7 @@
 <!--
   ~ /*******************************************************************************
   ~  jquery.mb.components
-  ~  file: demo_queue.html
+  ~  file: demo.html
   ~
   ~  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
   ~  Open lab srl, Firenze - Italy
@@ -15,7 +15,7 @@
   ~  http://www.opensource.org/licenses/mit-license.php
   ~  http://www.gnu.org/licenses/gpl.html
   ~
-  ~  last modified: 14/02/13 18.23
+  ~  last modified: 18/02/13 23.23
   ~  ******************************************************************************/
   -->
 
@@ -28,7 +28,7 @@
 
     <title>jquery.mb.audio</title>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script type="text/javascript" src="inc/jquery.mb.audio.js"></script>
     <script type="text/javascript">
 
@@ -38,7 +38,7 @@
         $.mbAudio.sounds = {
 
             backgroundSprite: {
-                id: "backgrounds",
+                id: "backgroundSprite",
                 ogg: "sounds/bgndsSprite.ogg",
                 mp3: "sounds/bgndsSprite.mp3",
                 //example of sprite
@@ -53,7 +53,7 @@
             },
 
             effectSprite: {
-                id: "effects",
+                id: "effectSprite",
                 ogg: "sounds/effectsSprite.ogg",
                 mp3: "sounds/effectsSprite.mp3",
                 //example of sprite
@@ -73,9 +73,9 @@
 
 
         $(function () {
-            if(!isAndroid)
                 $(document).one("soundsLoaded",function(){
-                    $.mbAudio.play('backgroundSprite',"level2");
+                    if(!isAndroid)
+                        $.mbAudio.play('backgroundSprite',"level2");
                 });
         })
 
@@ -95,26 +95,29 @@
 
 </head>
 <body>
+<a href="https://github.com/pupunzi/jquery.mb.audio"><img style="width:100px; position: absolute; top: 20px; right: 20px; border: 0; z-index: 1000" src="http://upload.wikimedia.org/wikipedia/commons/b/b3/GitHub.svg" alt="Fork me on GitHub"></a>
 <h2>jquery.mb.audio API: Using the "direct play" and the "sprite" features.</h2>
 <p>To invoke the "play" event for a specific sprite:<br>
     <b>$.mbAudio.play(audio, sprite)</b></p>
 
 <div id="start">
-    <p>This button is needed to initialize the audio, expecially for Android.</p>
+    <p>This button is needed to initialize audio (see the table in the documentation) [todo: wiki].</p>
     <script>
         if(isiOs || !isDevice){
-            document.write("<p>this button will also initialize the effects sprite and will play the background sprite.</p>")
+            document.write("<p>This button will also initialize the effects sprite and will play the background sprite (only iOS).</p>")
         }
     </script>
-    <button style="cursor:pointer" onclick="$.mbAudio.init(true); $('#start').hide(); $('#buttons').fadeIn()">Lets start</button>
+    <button style="cursor:pointer"  ontouchstart ="$.mbAudio.preload(); $('#start').hide(); $('#buttons').fadeIn(); $.mbAudio.pause('effectSprite');">Lets start</button>
 </div>
 <div id="buttons" style="display: none;">
-    <p>The tree buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
-    <button id="playSound1" style="cursor:pointer" onclick="$.mbAudio.play('effectSprite', 'streak')">play sound 1</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.play('effectSprite', 'wow')">play sound 2</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.play('effectSprite', 'great')">play sound 3</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background</button>
+    <p>The three buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
+    <button id="playSound1" style="cursor:pointer" ontouchstart="$.mbAudio.play('effectSprite', 'streak')">play effect 1</button> (it loops 3 times)
+    <button style="cursor:pointer"  ontouchstart="$.mbAudio.play('effectSprite', 'wow')">play effect 2</button>
+    <button style="cursor:pointer"  ontouchstart="$.mbAudio.play('effectSprite', 'great')">play effect 3</button>
+
+    <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background sound</button>
+    <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background sound</button>
 </div>
+<a href="demo_queue.html">See also the "Queue" demo</a>
 </body>
 </html>

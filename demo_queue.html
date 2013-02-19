@@ -15,7 +15,7 @@
   ~  http://www.opensource.org/licenses/mit-license.php
   ~  http://www.gnu.org/licenses/gpl.html
   ~
-  ~  last modified: 14/02/13 18.23
+  ~  last modified: 18/02/13 23.35
   ~  ******************************************************************************/
   -->
 
@@ -29,7 +29,7 @@
     <title>jquery.mb.audio - Queue</title>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script type="text/javascript" src="inc/jquery.mb.audio.js"></script>
+    <script type="text/javascript" src="inc/jquery.mb.audio.js?_=8y338"></script>
     <script type="text/javascript">
 
         /*
@@ -38,7 +38,7 @@
         $.mbAudio.sounds = {
 
             backgroundSprite: {
-                id: "backgrounds",
+                id: "backgroundSprite",
                 ogg: "sounds/bgndsSprite.ogg",
                 mp3: "sounds/bgndsSprite.mp3",
                 //example of sprite
@@ -53,15 +53,15 @@
             },
 
             effectSprite: {
-                id: "effects",
+                id: "effectSprite",
                 ogg: "sounds/effectsSprite.ogg",
-                mp3: "sounds/effectsSprite.mp3",
+                mp3: "sounds/effectsSprite1.mp3",
                 //example of sprite
                 sprite:{
                     streak: {id: "streak", start: 0, end: 1.3, loop: 3},
                     great : {id: "great", start: 5, end: 8, loop: false},
-                    divine: {id: "divine", start: 10, end: 11.6, loop: false},
-                    wow   : {id: "wow", start: 15, end: 20, loop: false},
+                    divine: {id: "divine", start: 10, end: 12, loop: false},
+                    wow   : {id: "wow", start: 15, end: 24, loop: false},
                     levelIntro    : {id: "levelIntro", start: 20, end: 25, loop: false},
                     levelCompleted: {id: "levelCompleted", start: 25, end: 30, loop: false},
                     subLevelLost: {id: "subLevelLost", start: 35, end: 38.1, loop: false},
@@ -72,11 +72,34 @@
         };
 
 
-        /*Background sound*/
-        if(!isAndroid)
-            $(document).one("soundsLoaded",function(){
-                $.mbAudio.queue.add('backgroundSprite',"level2");
-            });
+        function audioIsReady(){
+
+            setTimeout(function(){
+                $('#buttons').fadeIn();
+                $("#loading").hide();
+
+            },3000);
+
+        }
+
+        $(document).on("initAudio", function () {
+           // $.mbAudio.preload();
+            $.mbAudio.pause('effectSprite', audioIsReady);
+
+            if(isStandAlone || !isDevice)
+               $.mbAudio.queue.add('backgroundSprite',"level2");
+
+            $('#start').hide();
+            $("#loading").show();
+        });
+
+        $(document).on("event1", function () {toggleButtons(); $.mbAudio.queue.add('effectSprite', 'great',toggleButtons)});
+        $(document).on("event2", function () {toggleButtons(); $.mbAudio.queue.add('effectSprite', 'divine',toggleButtons)});
+        $(document).on("event3", function () {toggleButtons(); $.mbAudio.queue.add('effectSprite', 'streak',toggleButtons)});
+
+        function toggleButtons(){
+            $("button").toggleClass("disabled");
+        }
 
     </script>
 
@@ -87,31 +110,41 @@
         button{
             display: block;
             margin: 30px 10px;
-            padding: 10px;;
+            padding: 10px;
+
+        }
+        button.disabled{
+            opacity:.3;
 
         }
     </style>
 
 </head>
 <body>
+<a href="https://github.com/pupunzi/jquery.mb.audio"><img style="width:100px; position: absolute; top: 20px; right: 20px; border: 0; z-index: 1000" src="http://upload.wikimedia.org/wikipedia/commons/b/b3/GitHub.svg" alt="Fork me on GitHub"></a>
 <h2>jquery.mb.audio API: Using the Queue and the sprite features.</h2>
 <p>To "add" a soud to the queue:<br>
     <b>$.mbAudio.queue.add(audio, sprite)</b></p>
 
+
 <div id="start">
-    <p>This button is needed to initialize the audio, expecially for Android.</p>
+    <p>This button is needed to initialize audio (see the table in the documentation) [todo: wiki].</p>
     <script>
-        if(isiOs || !isDevice){
-            document.write("<p>this button will also initialize the effects sprite and will play the background sprite.</p>")
+        if((isiOs && isStandAlone) || !isDevice){
+            document.write("<p>This button will also initialize the effects sprite and will play the background sprite (only iOS).</p>")
         }
     </script>
-    <button style="cursor:pointer" onclick="$.mbAudio.init(true);  $('#start').hide(); $('#buttons').fadeIn()">Lets start</button>
+    <button style="cursor:pointer"  onclick="$(document).trigger('initAudio')">Lets start</button>
 </div>
+<div id="loading" style="display: none;">... loading ...</div>
 <div id="buttons" style="display: none;">
-    <p>The tree buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
-    <button id="playSound1" style="cursor:pointer" onclick="$.mbAudio.queue.add('effectSprite', 'streak')">play sound 1</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.queue.add('effectSprite', 'wow')">play sound 2</button>
-    <button style="cursor:pointer" onclick="$.mbAudio.queue.add('effectSprite', 'great')">play sound 3</button>
+    <p>The three buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
+    <button style="cursor:pointer" onmousedown="$(document).trigger('event1')">play sound 1</button>
+    <button style="cursor:pointer" onmousedown="$(document).trigger('event2')">play sound 2</button>
+    <button id="playSound1" style="cursor:pointer" onmousedown="$(document).trigger('event3')">play effect 3 (it loops 3 times)</button>
+    <br>
+    <a href="demo.html">See also the "direct play" demo</a>
 </div>
+
 </body>
 </html>

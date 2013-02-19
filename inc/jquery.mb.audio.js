@@ -14,7 +14,7 @@
  *  http://www.opensource.org/licenses/mit-license.php
  *  http://www.gnu.org/licenses/gpl.html
  *
- *  last modified: 05/01/13 13.01
+ *  last modified: 18/02/13 23.35
  *  *****************************************************************************
  */
 /*
@@ -65,17 +65,17 @@ function supportType(audioType) {
 		players          : {},
 		loaded           : {},
 		playing          : [],
-		ch:[],
+		ch               : [],
 		soundsMutedByHand: false,
 
 		build: function (sound) {
 
-			if(!$.mbAudio.isInit){
-				$(window).on("blur",function(){
+			if (!$.mbAudio.isInit) {
+				$(window).on("blur",function () {
 
 					$.mbAudio.soundsMutedByHand = true;
 					$.mbAudio.muteAllSounds();
-				}).on("focus",function(){
+				}).on("focus", function () {
 
 							$.mbAudio.soundsMutedByHand = false;
 							$.mbAudio.unMuteAllSounds();
@@ -91,24 +91,31 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1) {
 				var url = supportType("audio/mpeg") ? soundEl.mp3 : soundEl.ogg;
 
-				$.mbAudio.players[sID] = new Audio(url);
-				$.mbAudio.players[sID].load();
-				$.mbAudio.players[sID].pause();
+				/*
+				 $.mbAudio.players[sID] = new Audio(url);
+				 $.mbAudio.players[sID].load();
+				 $.mbAudio.players[sID].pause();
+				 */
 
-/*
 				//preload must be none for iOs concurrency problem.
 				var audio = $("<audio/>").attr({id: "mbAudio_" + sID, preload: "none", src: url});
 				$("body").append(audio);
 				audio.get(0).load();
-*/
 
 				$.mbAudio.loaded[sID] = 1;
 			}
 		},
 
 		getPlayer: function (ID) {
-//			return document.getElementById("mbAudio_" + ID);
-			return $.mbAudio.players[ID];
+			var el = document.getElementById("mbAudio_" + ID);
+			if ($(el).length == 0) {
+				var soundEl = typeof ID == "string" ? $.mbAudio.sounds[ID] : ID;
+				var sID = soundEl.id ? soundEl.id : (typeof sound == "string" ? sound : sound.mp3.split(".")[0].asId());
+				el = document.getElementById("mbAudio_" + sID)
+			}
+			return el;
+
+//			return $.mbAudio.players[ID];
 		},
 
 		onTimeUpdate: function (sound, callback) {
@@ -127,21 +134,13 @@ function supportType(audioType) {
 		},
 
 		preload: function () {
-			for (var i in $.mbAudio.sounds) {
-				$.mbAudio.build(i);
-			}
-		},
+			if (isDevice && !isStandAlone)
+				for (var sID in $.mbAudio.sounds) {
+					$.mbAudio.build(sID);
+					//$.mbAudio.pause(sID);
+				}
 
-		init: function(direct){
-			if(isDevice && !isStandAlone && !direct)
-				$(document).one("touchstart",function(){
-					for(var snds in $.mbAudio.sounds){
-						$.mbAudio.build(snds);
-					}
-					$(document).trigger("soundsLoaded");
-				})
-			else
-				$(document).trigger("soundsLoaded");
+			$(document).trigger("soundsLoaded");
 		},
 
 		play: function (sound, sprite, callback) {
@@ -157,9 +156,9 @@ function supportType(audioType) {
 			volume = volume > 10 ? 10 : volume;
 
 			//if ($.mbAudio.loaded[sID] != 1)
-				$.mbAudio.build(sound);
+			$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID) //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID)
 			player.vol = volume;
 
 			if (!$.mbAudio.allMuted)
@@ -174,7 +173,7 @@ function supportType(audioType) {
 
 			/*Manage sprite*/
 
-			if(sprite && (typeof sprite == "string" || typeof sprite == "object")){
+			if (sprite && (typeof sprite == "string" || typeof sprite == "object")) {
 
 				sprite = typeof sprite == "string" ? soundEl.sprite[sprite] : sprite;
 
@@ -256,54 +255,63 @@ function supportType(audioType) {
 			player.pause();
 
 			/*Chrome bugfix*/
-			setTimeout(function () {
+
+			/*
+			 if(isChrome)
+			 setTimeout(function () {
+			 player.currentTime = sprite.start;
+			 }, 40);
+			 else
+			 player.currentTime = sprite.start;
+			 */
+
+			function checkStart(player, sID, sound, sprite, callback){
 				player.currentTime = sprite.start;
-			}, 40)
 
-			player.isPlaying = true;
+				if (player.currentTime != sprite.start){
 
-			var delay = ((sprite.end - sprite.start) * 1000) + 100;
+					checkStart(player, sID, sound, sprite, callback);
 
-			var canFireCallback = true;
+				}else{
+					playerPlay(player, sID, sound, sprite, callback);
+				}
+			}
+			checkStart(player, sID, sound, sprite, callback);
 
-			player.play();
+			function playerPlay(player, sID, sound, sprite, callback) {
+				var delay = ((sprite.end - sprite.start) * 1000) + 100;
+				var canFireCallback = true;
+				player.play();
+				player.isPlaying = true;
 
-			player.timeOut = setTimeout(function () {
-
-				if (sprite.loop) {
-
-					canFireCallback = false;
-					sprite.loop = sprite.loop == true ? 9999 : sprite.loop;
-
-					if (!player.counter)
-						player.counter = 1;
-
-					if (player.counter != sprite.loop && player.isPlaying) {
-						player.counter++;
-						player.currentTime = sprite.start || 0;
-						$.mbAudio.play(sound, sprite, callback);
+				player.timeOut = setTimeout(function () {
+					if (sprite.loop) {
+						canFireCallback = false;
+						sprite.loop = sprite.loop == true ? 9999 : sprite.loop;
+						if (!player.counter)
+							player.counter = 1;
+						if (player.counter != sprite.loop && player.isPlaying) {
+							player.counter++;
+							player.currentTime = sprite.start || 0;
+							$.mbAudio.play(sound, sprite, callback);
+						} else {
+							player.counter = 0;
+							canFireCallback = true;
+							player.pause();
+							delete player.isPlaying;
+						}
 					} else {
-						player.counter = 0;
-						canFireCallback = true;
 						player.pause();
 						delete player.isPlaying;
-
 					}
-				} else {
-					player.pause();
-					delete player.isPlaying;
-				}
-
-				if (canFireCallback && typeof callback == "function")
-					callback(player);
-
-				var idx = jQuery.inArray(sID, $.mbAudio.playing);
-				$.mbAudio.playing.splice(idx, 1);
-
-			}, delay);
-
-			$.mbAudio.playing.push(sID);
-			player.isPlaying = true;
+					if (canFireCallback && typeof callback == "function")
+						callback(player);
+					var idx = jQuery.inArray(sID, $.mbAudio.playing);
+					$.mbAudio.playing.splice(idx, 1);
+				}, delay);
+				$.mbAudio.playing.push(sID);
+				player.isPlaying = true;
+			}
 		},
 
 		stop: function (sound, callback) {
@@ -318,7 +326,7 @@ function supportType(audioType) {
 
 			var sID = soundEl.id ? soundEl.id : (typeof sound == "string" ? sound : sound.mp3.split(".")[0].asId());
 
-			var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID);
 
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
@@ -329,7 +337,7 @@ function supportType(audioType) {
 
 			$(player).off('ended.' + sID);
 
-			if(typeof callback == "function")
+			if (typeof callback == "function")
 				callback(player);
 
 			var idx = jQuery.inArray(sID, $.mbAudio.playing);
@@ -339,7 +347,7 @@ function supportType(audioType) {
 
 		},
 
-		pause: function (sound) {
+		pause: function (sound, callback) {
 			var soundEl = typeof sound == "string" ? $.mbAudio.sounds[sound] : sound;
 			var sID = soundEl.id ? soundEl.id : (typeof sound == "string" ? sound : sound.mp3.split(".")[0].asId());
 
@@ -347,7 +355,7 @@ function supportType(audioType) {
 				$.mbAudio.build(sound);
 			}
 
-			var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID);
 			player.pause();
 
 
@@ -362,6 +370,10 @@ function supportType(audioType) {
 
 			clearTimeout(player.timeOut);
 
+			if (typeof callback == "function")
+				callback();
+
+
 		},
 
 		destroy: function (sound) {
@@ -371,7 +383,7 @@ function supportType(audioType) {
 			var idx = jQuery.inArray(sID, $.mbAudio.playing);
 			$.mbAudio.playing.splice(idx, 1);
 
-			var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID);
 
 			if (!player)
 				return;
@@ -386,8 +398,8 @@ function supportType(audioType) {
 				return;
 
 			for (var sID in sounds) {
-				var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + i);
-				player.vol = player.volume*10;
+				var player = $.mbAudio.getPlayer(sID);
+				player.vol = player.volume * 10;
 				player.volume = 0;
 			}
 			$.mbAudio.allMuted = true;
@@ -399,7 +411,7 @@ function supportType(audioType) {
 				return;
 
 			for (var sID in sounds) {
-				var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + id);
+				var player = $.mbAudio.getPlayer(sID);
 				player.volume = player.vol / 10;
 			}
 			$.mbAudio.allMuted = false;
@@ -424,7 +436,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID);
 			vol = vol > 10 ? 10 : vol;
 			player.vol = vol;
 
@@ -445,7 +457,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID);
 			var volume = typeof soundEl.volume == "number" ? soundEl.volume : $.mbAudio.defaults.volume;
 			volume = volume > 10 ? 10 : volume;
 
@@ -494,7 +506,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID); //document.getElementById("mbAudio_" + sID);
+			var player = $.mbAudio.getPlayer(sID);
 			var volume = player.volume ? player.volume * 10 : (typeof soundEl.volume == "number" ? soundEl.volume : $.mbAudio.defaults.volume);
 			volume = volume > 10 ? 10 : volume;
 
@@ -544,9 +556,9 @@ function supportType(audioType) {
 
 				var soundEl = typeof soundID == "string" ? $.mbAudio.sounds[soundID] : soundID;
 
-				if(!soundEl.started){
-					$.mbAudio.play(soundID);
-					soundEl.started=true;
+				if (!soundEl.started) {
+					$.mbAudio.pause(soundID);
+					soundEl.started = true;
 				}
 
 				sprite = typeof sprite == "string" ? soundEl.sprite[sprite] : sprite;
@@ -588,7 +600,7 @@ function supportType(audioType) {
 						channel.soundInPlay = channel.playingSounds[0];
 
 						function callback() {
-							if(typeof channel.soundInPlay.callback == "function")
+							if (typeof channel.soundInPlay.callback == "function")
 								channel.soundInPlay.callback();
 
 							channel.playingSounds.splice(0, 1);
@@ -615,11 +627,11 @@ function supportType(audioType) {
 			},
 
 			mute: function (channel) {
-				if(!channel)
+				if (!channel)
 					$.mbAudio.soundsMutedByHand = true;
-				else{
+				else {
 					var ch = $.mbAudio.queue.get(channel);
-					if(ch)
+					if (ch)
 						ch.isMuted = true;
 					$.mbAudio.pause(channel)
 
@@ -628,11 +640,11 @@ function supportType(audioType) {
 			},
 
 			unMute: function (channel) {
-				if(!channel)
+				if (!channel)
 					$.mbAudio.soundsMutedByHand = false;
-				else{
+				else {
 					var ch = $.mbAudio.queue.get(channel);
-					if(ch)
+					if (ch)
 						ch.isMuted = false;
 				}
 			},
