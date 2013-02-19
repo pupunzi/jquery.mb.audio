@@ -55,7 +55,7 @@
             effectSprite: {
                 id: "effectSprite",
                 ogg: "sounds/effectsSprite.ogg",
-                mp3: "sounds/effectsSprite.mp3",
+                mp3: "sounds/effectsSprite1.mp3",
                 //example of sprite
                 sprite:{
                     streak: {id: "streak", start: 0, end: 1.3, loop: 3},
@@ -79,6 +79,35 @@
                 });
         })
 
+
+
+        function audioIsReady(){
+
+            setTimeout(function(){
+                $('#buttons').fadeIn();
+                $("#loading").hide();
+
+            },3000);
+
+        }
+
+
+
+        $(document).on("initAudio", function () {
+            $.mbAudio.pause('effectSprite', audioIsReady);
+
+            if(isStandAlone || !isDevice)
+                $.mbAudio.play('backgroundSprite',"level2");
+
+            $('#start').hide();
+            $("#loading").show();
+        });
+
+        function toggleButtons(){
+            $("button").toggleClass("disabled");
+        }
+
+
     </script>
 
     <style>
@@ -91,6 +120,11 @@
             padding: 10px;;
 
         }
+        button.disabled{
+            opacity:.3;
+
+        }
+
     </style>
 
 </head>
@@ -107,13 +141,15 @@
             document.write("<p>This button will also initialize the effects sprite and will play the background sprite (only iOS).</p>")
         }
     </script>
-    <button style="cursor:pointer"  ontouchstart ="$.mbAudio.preload(); $('#start').hide(); $('#buttons').fadeIn(); $.mbAudio.pause('effectSprite');">Lets start</button>
+    <button style="cursor:pointer"  onclick="$(document).trigger('initAudio')">Lets start</button>
 </div>
+<div id="loading" style="display: none;">... loading ...</div>
+
 <div id="buttons" style="display: none;">
     <p>The three buttons below play sounds from the same audio file (sounds/bgndsSprite .mp3 or .ogg)</b></p>
-    <button id="playSound1" style="cursor:pointer" ontouchstart="$.mbAudio.play('effectSprite', 'streak')">play effect 1</button> (it loops 3 times)
-    <button style="cursor:pointer"  ontouchstart="$.mbAudio.play('effectSprite', 'wow')">play effect 2</button>
-    <button style="cursor:pointer"  ontouchstart="$.mbAudio.play('effectSprite', 'great')">play effect 3</button>
+    <button id="playSound1" style="cursor:pointer" onmousedown="toggleButtons();$.mbAudio.play('effectSprite', 'streak',toggleButtons)">play effect 1</button> (it loops 3 times)
+    <button style="cursor:pointer"  onmousedown="toggleButtons();$.mbAudio.play('effectSprite', 'wow',toggleButtons)">play effect 2</button>
+    <button style="cursor:pointer"  onmousedown="toggleButtons();$.mbAudio.play('effectSprite', 'great',toggleButtons)">play effect 3</button>
 
     <button style="cursor:pointer" onclick="$.mbAudio.pause('backgroundSprite')">stop background sound</button>
     <button style="cursor:pointer" onclick="$.mbAudio.play('backgroundSprite','level2')">start background sound</button>
