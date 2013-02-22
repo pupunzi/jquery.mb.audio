@@ -1,1 +1,6 @@
-test
+An audio library for mobile HTML5 that tries to actually work :-) 
+
+We have really limited ambitions for this library: just play simple audio without dramatically impacting mobile browser performance. Still to reach even this modest goal with a library that works on iOS6+ and Android 4+, we had to resort to several horrible hacks.
+
+Demo - direct play: http://pupunzi.github.com/jquery.mb.audio/demo.html
+Demo - queue: http://pupunzi.github.com/jquery.mb.audio/demo_queue.html
