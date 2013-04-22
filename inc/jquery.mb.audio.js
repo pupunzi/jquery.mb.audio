@@ -91,16 +91,16 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1) {
 				var url = supportType("audio/mpeg") ? soundEl.mp3 : soundEl.ogg;
 
-				/*
 				 $.mbAudio.players[sID] = new Audio(url);
 				 $.mbAudio.players[sID].load();
 				 $.mbAudio.players[sID].pause();
-				 */
 
+/*
 				//preload must be none for iOs concurrency problem.
 				var audio = $("<audio/>").attr({id: "mbAudio_" + sID, preload: "none", src: url});
 				$("body").append(audio);
 				audio.get(0).load();
+*/
 
 				$.mbAudio.loaded[sID] = 1;
 			}
@@ -108,14 +108,14 @@ function supportType(audioType) {
 
 		getPlayer: function (ID) {
 			var el = document.getElementById("mbAudio_" + ID);
-			if ($(el).length == 0) {
+			if ($(el).length == 0 || !$.mbAudio.players[ID]) {
 				var soundEl = typeof ID == "string" ? $.mbAudio.sounds[ID] : ID;
 				var sID = soundEl.id ? soundEl.id : (typeof sound == "string" ? sound : sound.mp3.split(".")[0].asId());
-				el = document.getElementById("mbAudio_" + sID)
+				ID = sID;
 			}
-			return el;
 
-//			return $.mbAudio.players[ID];
+//				return document.getElementById("mbAudio_" + ID);;
+			return $.mbAudio.players[ID];
 		},
 
 		onTimeUpdate: function (sound, callback) {
@@ -358,7 +358,6 @@ function supportType(audioType) {
 			var player = $.mbAudio.getPlayer(sID);
 			player.pause();
 
-
 			$(player).off('ended.' + sID);
 
 			var idx = jQuery.inArray(sID, $.mbAudio.playing);
@@ -372,7 +371,6 @@ function supportType(audioType) {
 
 			if (typeof callback == "function")
 				callback();
-
 
 		},
 
