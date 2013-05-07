@@ -14,7 +14,7 @@
  *  http://www.opensource.org/licenses/mit-license.php
  *  http://www.gnu.org/licenses/gpl.html
  *
- *  last modified: 18/02/13 23.35
+ *  last modified: 08/05/13 1.09
  *  *****************************************************************************
  */
 /*
@@ -134,7 +134,7 @@ function supportType(audioType) {
 		},
 
 		preload: function () {
-			if (isDevice && !isStandAlone)
+	//		if (isDevice && !isStandAlone)
 				for (var sID in $.mbAudio.sounds) {
 					$.mbAudio.build(sID);
 					//$.mbAudio.pause(sID);
