@@ -3,7 +3,7 @@
  *  jquery.mb.components
  *  file: jquery.mb.audio.js
  *
- *  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi); 
+ *  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
  *  Open lab srl, Firenze - Italy
  *  email: matteo@open-lab.com
  *  site: 	http://pupunzi.com
@@ -14,9 +14,10 @@
  *  http://www.opensource.org/licenses/mit-license.php
  *  http://www.gnu.org/licenses/gpl.html
  *
- *  last modified: 08/05/13 1.09
+ *  last modified: 02/10/13 22.42
  *  *****************************************************************************
  */
+
 /*
  *
  * Works on all modern browsers.
@@ -39,7 +40,7 @@ String.prototype.asId = function () {
 
 function supportType(audioType) {
 	var myAudio = document.createElement('audio');
-	var isSupp = myAudio.canPlayType(audioType);
+	var isSupp = myAudio.canPlayType &&  myAudio.canPlayType(audioType);
 	if (isSupp == "") {
 		isSupp = false;
 	} else {
