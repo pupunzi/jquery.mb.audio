@@ -15,7 +15,7 @@
   ~  http://www.opensource.org/licenses/mit-license.php
   ~  http://www.gnu.org/licenses/gpl.html
   ~
-  ~  last modified: 02/10/13 22.42
+  ~  last modified: 15/10/13 21.47
   ~  ******************************************************************************/
   -->
 
@@ -36,7 +36,6 @@
          * DEFINE SOUNDS
          */
         $.mbAudio.sounds = {
-
             backgroundSprite: {
                 id    : "backgroundSprite",
                 ogg   : "sounds/bgndsSprite.ogg",
@@ -71,25 +70,19 @@
             }
         };
 
-
         function audioIsReady() {
-
             setTimeout(function () {
                 $('#buttons').fadeIn();
                 $("#loading").hide();
-
                 if (isStandAlone || !isDevice)
                     $.mbAudio.play('backgroundSprite', "level2");
-
             }, 3000);
-
         }
 
         $(document).on("initAudio", function () {
 
             //otherwise sound is initialized on the first tap loosing time and UX
             $.mbAudio.pause('effectSprite', audioIsReady);
-
 
             $('#start').hide();
             $("#loading").show();
@@ -112,7 +105,6 @@
             /*
                     button.disabled{
                         opacity:.3;
-
                     }
             */
 
