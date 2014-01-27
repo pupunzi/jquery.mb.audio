@@ -4,7 +4,7 @@
   ~  jquery.mb.components
   ~  file: demo_queue.html
   ~
-  ~  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
+  ~  Copyright (c) 2001-2014. Matteo Bicocchi (Pupunzi);
   ~  Open lab srl, Firenze - Italy
   ~  email: matteo@open-lab.com
   ~  site: 	http://pupunzi.com
@@ -15,7 +15,7 @@
   ~  http://www.opensource.org/licenses/mit-license.php
   ~  http://www.gnu.org/licenses/gpl.html
   ~
-  ~  last modified: 02/10/13 22.42
+  ~  last modified: 07/01/14 22.50
   ~  ******************************************************************************/
   -->
 
@@ -71,23 +71,22 @@
             }
         };
 
-
         function audioIsReady(){
 
             setTimeout(function(){
                 $('#buttons').fadeIn();
                 $("#loading").hide();
 
+                if(isStandAlone || !isDevice)
+                    $.mbAudio.queue.add('backgroundSprite',"levelIntro");
+
             },3000);
 
         }
 
         $(document).on("initAudio", function () {
-           // $.mbAudio.preload();
             $.mbAudio.pause('effectSprite', audioIsReady);
 
-            if(isStandAlone || !isDevice)
-               $.mbAudio.queue.add('backgroundSprite',"level2");
 
             $('#start').hide();
             $("#loading").show();
@@ -96,6 +95,7 @@
         $(document).on("event1", function () {toggleButtons(); $.mbAudio.queue.add('effectSprite', 'great',toggleButtons)});
         $(document).on("event2", function () {toggleButtons(); $.mbAudio.queue.add('effectSprite', 'divine',toggleButtons)});
         $(document).on("event3", function () {toggleButtons(); $.mbAudio.queue.add('effectSprite', 'streak',toggleButtons)});
+        $(document).on("event4", function () {$.mbAudio.queue.add('backgroundSprite', 'levelIntro')});
 
         function toggleButtons(){
             $("button").toggleClass("disabled");
@@ -115,7 +115,6 @@
         }
         button.disabled{
             opacity:.3;
-
         }
     </style>
 
@@ -126,7 +125,6 @@
 <p>To "add" a soud to the queue:<br>
     <b>$.mbAudio.queue.add(audio, sprite)</b></p>
 
-
 <div id="start">
     <p>This button is needed to initialize audio (see the table in the documentation) [todo: wiki].</p>
     <script>
@@ -134,7 +132,7 @@
             document.write("<p>This button will also initialize the effects sprite and will play the background sprite (only iOS).</p>")
         }
     </script>
-    <button style="cursor:pointer"  onclick="$(document).trigger('initAudio')">Lets start</button>
+    <button style="cursor:pointer"  onmousedown="$(document).trigger('initAudio')">Lets start</button>
 </div>
 <div id="loading" style="display: none;">... loading ...</div>
 <div id="buttons" style="display: none;">
@@ -142,6 +140,8 @@
     <button style="cursor:pointer" onmousedown="$(document).trigger('event1')">play sound 1</button>
     <button style="cursor:pointer" onmousedown="$(document).trigger('event2')">play sound 2</button>
     <button id="playSound1" style="cursor:pointer" onmousedown="$(document).trigger('event3')">play effect 3 (it loops 3 times)</button>
+    <br>
+    <button style="cursor:pointer" onmousedown="$(document).trigger('event4')">play background</button>
     <br>
     <a href="demo.html">See also the "direct play" demo</a>
 </div>

@@ -3,7 +3,7 @@
  *  jquery.mb.components
  *  file: jquery.mb.audio.js
  *
- *  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
+ *  Copyright (c) 2001-2014. Matteo Bicocchi (Pupunzi);
  *  Open lab srl, Firenze - Italy
  *  email: matteo@open-lab.com
  *  site: 	http://pupunzi.com
@@ -14,7 +14,7 @@
  *  http://www.opensource.org/licenses/mit-license.php
  *  http://www.gnu.org/licenses/gpl.html
  *
- *  last modified: 02/10/13 22.42
+ *  last modified: 07/01/14 22.50
  *  *****************************************************************************
  */
 
@@ -96,13 +96,6 @@ function supportType(audioType) {
 				 $.mbAudio.players[sID].load();
 				 $.mbAudio.players[sID].pause();
 
-/*
-				//preload must be none for iOs concurrency problem.
-				var audio = $("<audio/>").attr({id: "mbAudio_" + sID, preload: "none", src: url});
-				$("body").append(audio);
-				audio.get(0).load();
-*/
-
 				$.mbAudio.loaded[sID] = 1;
 			}
 		},
@@ -115,30 +108,12 @@ function supportType(audioType) {
 				ID = sID;
 			}
 
-//				return document.getElementById("mbAudio_" + ID);;
 			return $.mbAudio.players[ID];
 		},
 
-		onTimeUpdate: function (sound, callback) {
-
-			var soundEl = typeof sound == "string" ? $.mbAudio.sounds[sound] : sound;
-			var sID = soundEl.id ? soundEl.id : (typeof sound == "string" ? sound : sound.mp3.split(".")[0].asId());
-
-			if ($.mbAudio.loaded[sID] != 1)
-				$.mbAudio.build(sound);
-
-			var player = $.mbAudio.getPlayer(sID);
-
-			$(player).on('timeupdate.' + sID, function () {
-				callback(this);
-			});
-		},
-
 		preload: function () {
-	//		if (isDevice && !isStandAlone)
 				for (var sID in $.mbAudio.sounds) {
 					$.mbAudio.build(sID);
-					//$.mbAudio.pause(sID);
 				}
 
 			$(document).trigger("soundsLoaded");
@@ -159,7 +134,7 @@ function supportType(audioType) {
 			//if ($.mbAudio.loaded[sID] != 1)
 			$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID)
+			var player = $.mbAudio.getPlayer(sID);
 			player.vol = volume;
 
 			if (!$.mbAudio.allMuted)
@@ -183,13 +158,16 @@ function supportType(audioType) {
 				if (!isAndroid && player.seekable.length == 0) {
 
 					//	We are not crazy; this is to start loading audio
+/*
 					player.play();
 					if (!isMoz)
+*/
 						player.pause();
 
 					var getSeekable = setInterval(function () {
 
 						if (player.seekable.length > 0 && player.seekable.end(0) >= sprite.end - 1) {
+
 							clearInterval(getSeekable);
 							$.mbAudio.manageSprite(player, sID, sound, sprite, callback);
 						}
@@ -226,6 +204,7 @@ function supportType(audioType) {
 				});
 
 			} else {
+
 				$(player).on("ended." + sID + ",paused." + sID, function () {
 
 					$.mbAudio.playing.splice(sID, 1);
@@ -236,8 +215,6 @@ function supportType(audioType) {
 
 				});
 			}
-
-			//	player.volume = player.vol / 10;
 
 			player.pause();
 			if (player.currentTime && sprite)
@@ -255,17 +232,6 @@ function supportType(audioType) {
 
 			player.pause();
 
-			/*Chrome bugfix*/
-
-			/*
-			 if(isChrome)
-			 setTimeout(function () {
-			 player.currentTime = sprite.start;
-			 }, 40);
-			 else
-			 player.currentTime = sprite.start;
-			 */
-
 			function checkStart(player, sID, sound, sprite, callback){
 				player.currentTime = sprite.start;
 
@@ -278,13 +244,11 @@ function supportType(audioType) {
 				}
 			}
 			checkStart(player, sID, sound, sprite, callback);
-
 			function playerPlay(player, sID, sound, sprite, callback) {
 				var delay = ((sprite.end - sprite.start) * 1000) + 100;
 				var canFireCallback = true;
 				player.play();
 				player.isPlaying = true;
-
 				player.timeOut = setTimeout(function () {
 					if (sprite.loop) {
 						canFireCallback = false;
@@ -443,7 +407,7 @@ function supportType(audioType) {
 
 		},
 
-		fadeIn: function (sound, duration, callback) {
+		fadeIn: function (sound, sprite, duration, callback) {
 
 			if (!duration)
 				duration = 3000;
