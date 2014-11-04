@@ -235,15 +235,15 @@ function supportType(audioType) {
 			function checkStart(player, sID, sound, sprite, callback){
 				player.currentTime = sprite.start;
 
-				if (player.currentTime != sprite.start){
-
+				if (Math.round(player.currentTime) != Math.round(sprite.start)){
 					checkStart(player, sID, sound, sprite, callback);
-
 				}else{
 					playerPlay(player, sID, sound, sprite, callback);
 				}
 			}
+
 			checkStart(player, sID, sound, sprite, callback);
+
 			function playerPlay(player, sID, sound, sprite, callback) {
 				var delay = ((sprite.end - sprite.start) * 1000) + 100;
 				var canFireCallback = true;
