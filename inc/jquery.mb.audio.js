@@ -236,7 +236,9 @@ function supportType(audioType) {
 				player.currentTime = sprite.start;
 
 				if (Math.round(player.currentTime) != Math.round(sprite.start)){
-					checkStart(player, sID, sound, sprite, callback);
+					setTimeout(function() {
+						checkStart(player, sID, sound, sprite, callback);
+					}, 5);
 				}else{
 					playerPlay(player, sID, sound, sprite, callback);
 				}
