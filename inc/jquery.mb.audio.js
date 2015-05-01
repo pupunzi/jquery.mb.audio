@@ -100,7 +100,7 @@ function supportType(audioType) {
 			}
 		},
 
-		getPlayer: function (ID) {
+		YTPGetPlayer: function (ID) {
 			var el = document.getElementById("mbAudio_" + ID);
 			if ($(el).length == 0 || !$.mbAudio.players[ID]) {
 				var soundEl = typeof ID == "string" ? $.mbAudio.sounds[ID] : ID;
@@ -134,7 +134,7 @@ function supportType(audioType) {
 			//if ($.mbAudio.loaded[sID] != 1)
 			$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 			player.vol = volume;
 
 			if (!$.mbAudio.allMuted)
@@ -293,7 +293,7 @@ function supportType(audioType) {
 
 			var sID = soundEl.id ? soundEl.id : (typeof sound == "string" ? sound : sound.mp3.split(".")[0].asId());
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
@@ -322,7 +322,7 @@ function supportType(audioType) {
 				$.mbAudio.build(sound);
 			}
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 			player.pause();
 
 			$(player).off('ended.' + sID);
@@ -348,7 +348,7 @@ function supportType(audioType) {
 			var idx = jQuery.inArray(sID, $.mbAudio.playing);
 			$.mbAudio.playing.splice(idx, 1);
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 
 			if (!player)
 				return;
@@ -363,7 +363,7 @@ function supportType(audioType) {
 				return;
 
 			for (var sID in sounds) {
-				var player = $.mbAudio.getPlayer(sID);
+				var player = $.mbAudio.YTPGetPlayer(sID);
 				player.vol = player.volume * 10;
 				player.volume = 0;
 			}
@@ -376,7 +376,7 @@ function supportType(audioType) {
 				return;
 
 			for (var sID in sounds) {
-				var player = $.mbAudio.getPlayer(sID);
+				var player = $.mbAudio.YTPGetPlayer(sID);
 				player.volume = player.vol / 10;
 			}
 			$.mbAudio.allMuted = false;
@@ -401,7 +401,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 			vol = vol > 10 ? 10 : vol;
 			player.vol = vol;
 
@@ -422,7 +422,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 			var volume = typeof soundEl.volume == "number" ? soundEl.volume : $.mbAudio.defaults.volume;
 			volume = volume > 10 ? 10 : volume;
 
@@ -471,7 +471,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			var player = $.mbAudio.getPlayer(sID);
+			var player = $.mbAudio.YTPGetPlayer(sID);
 			var volume = player.volume ? player.volume * 10 : (typeof soundEl.volume == "number" ? soundEl.volume : $.mbAudio.defaults.volume);
 			volume = volume > 10 ? 10 : volume;
 
