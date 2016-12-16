@@ -162,7 +162,7 @@ function supportType(audioType) {
 					player.play();
 					if (!isMoz)
 */
-						player.pause();
+						//player.pause();
 
 					var getSeekable = setInterval(function () {
 
@@ -216,7 +216,7 @@ function supportType(audioType) {
 				});
 			}
 
-			player.pause();
+			//player.pause();
 			if (player.currentTime && sprite)
 				player.currentTime = 0;
 
@@ -230,7 +230,7 @@ function supportType(audioType) {
 
 		manageSprite: function (player, sID, sound, sprite, callback) {
 
-			player.pause();
+			//player.pause();
 
 			function checkStart(player, sID, sound, sprite, callback){
 				player.currentTime = sprite.start;
@@ -268,7 +268,7 @@ function supportType(audioType) {
 							delete player.isPlaying;
 						}
 					} else {
-						player.pause();
+						//player.pause();
 						delete player.isPlaying;
 					}
 					if (canFireCallback && typeof callback == "function")
@@ -298,7 +298,7 @@ function supportType(audioType) {
 			if ($.mbAudio.loaded[sID] != 1)
 				$.mbAudio.build(sound);
 
-			player.pause();
+			//player.pause();
 			if (player.currentTime)
 				player.currentTime = 0;
 
