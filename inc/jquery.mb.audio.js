@@ -72,16 +72,15 @@ function supportType(audioType) {
 		build: function (sound) {
 
 			if (!$.mbAudio.isInit) {
-				$(window).on("blur",function () {
-
-					$.mbAudio.soundsMutedByHand = true;
-					$.mbAudio.muteAllSounds();
-				}).on("focus", function () {
-
-							$.mbAudio.soundsMutedByHand = false;
-							$.mbAudio.unMuteAllSounds();
-						});
-
+				if (isDevice) {
+					$(window).on("blur",function () {
+						$.mbAudio.soundsMutedByHand = true;
+						$.mbAudio.muteAllSounds();
+					}).on("focus", function () {
+						$.mbAudio.soundsMutedByHand = false;
+						$.mbAudio.unMuteAllSounds();
+					});
+				}
 				$.mbAudio.isInit = true;
 
 			}
