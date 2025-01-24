@@ -14,7 +14,7 @@ const PATH = '/System/Library/Sounds/',
 
             'Morse', 'Ping', 'Pop', 'Purr', 'Sosumi', 'Submarine', 'Tink'];
 
-var myAudioContext, myAudioAnalyser,
+let myAudioContext, myAudioAnalyser,
 
         myBuffers = {}, mySource,
 
@@ -37,8 +37,6 @@ function init() {
         myAudioAnalyser.smoothingTimeConstant = 0.85;
 
         myAudioAnalyser.connect(myAudioContext.destination);
-
-
 
         fetchSounds();
 
